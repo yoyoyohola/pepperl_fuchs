@@ -124,8 +124,12 @@ void R2000Node::getScanData(const ros::TimerEvent &e)
 
     // scanmsg.angle_min = -M_PI;
     // scanmsg.angle_max = +M_PI;
-    scanmsg.angle_min = -M_PI/2;
-    scanmsg.angle_max = +M_PI;
+    double angle_min = -M_PI;
+    double angle_max = M_PI;
+    ros::param::get("~angle_min",angle_min);
+    ros::param::get("~angle_max",angle_max);
+    scanmsg.angle_min = angle_min;
+    scanmsg.angle_max = angle_max;
     scanmsg.angle_increment = 2*M_PI/float(scandata.distance_data.size());
     scanmsg.time_increment = 1/35.0f/float(scandata.distance_data.size());
 
@@ -141,7 +145,11 @@ void R2000Node::getScanData(const ros::TimerEvent &e)
     //scanmsg.intensities.resize(new_range_size);
     // scanmsg.ranges.resize(scandata.distance_data.size());
     // scanmsg.intensities.resize(scandata.amplitude_data.size());
-    for( std::size_t i=index_negative_90; i<scandata.distance_data.size(); i++ )
+    int count_start = (scanmsg.angle_min + M_PI)/2/M_PI*scandata.distance_data.size();
+    int count_end = (scanmsg.angle_max + M_PI)/2/M_PI*scandata.distance_data.size();
+
+
+    for( std::size_t i=count_start; i<count_end; i++ )
     {
         //scanmsg.ranges[i] = float(scandata.distance_data[i])/1000.0f;
         //scanmsg.intensities[i] = scandata.amplitude_data[i];
