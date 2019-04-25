@@ -135,16 +135,18 @@ void R2000Node::getScanData(const ros::TimerEvent &e)
 
     // NOTE: (kwhu@visionnav.com)
     // Drop data from degree 180 - 270
-    size_t index_negative_90 = ceil(1/4.0 * scandata.distance_data.size());
-    size_t new_range_size = scandata.distance_data.size() - index_negative_90;
-    scanmsg.ranges.resize(new_range_size);
-    scanmsg.intensities.resize(new_range_size);
+    size_t index_negative_90 = std::ceil(1/4.0 * float(scandata.distance_data.size()) );
+    //size_t new_range_size = scandata.distance_data.size() - index_negative_90;
+    //scanmsg.ranges.resize(new_range_size);
+    //scanmsg.intensities.resize(new_range_size);
     // scanmsg.ranges.resize(scandata.distance_data.size());
     // scanmsg.intensities.resize(scandata.amplitude_data.size());
     for( std::size_t i=index_negative_90; i<scandata.distance_data.size(); i++ )
     {
-        scanmsg.ranges[i] = float(scandata.distance_data[i])/1000.0f;
-        scanmsg.intensities[i] = scandata.amplitude_data[i];
+        //scanmsg.ranges[i] = float(scandata.distance_data[i])/1000.0f;
+        //scanmsg.intensities[i] = scandata.amplitude_data[i];
+        scanmsg.ranges.push_back(float(scandata.distance_data[i])/1000.0f);
+        scanmsg.intensities.push_back(scandata.amplitude_data[i]);
     }
     scan_publisher_.publish(scanmsg);
 }
